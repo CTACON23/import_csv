@@ -2,33 +2,13 @@ import React, {useState} from 'react';
 import { CSVReader } from 'react-papaparse';
 
 import Table from './Table/Table'
+import {parseArrayFunction} from './parseArrayFunction.js'
 
 const buttonRef = React.createRef();
 
-const setDuplicateWith = (array) => {
-  for(let i =0; i< array.length; i++){
-    for(let j = 0; j<array.length;j++){
-      
-      if(j < i && i !== j){
-        if((array[i].Phone == array[j].Phone)){
-          array[i]['Duplicate with']['context'] =  array[j]['Duplicate with']['context'] = 'phone'
-          array[i]['Duplicate with']['ids'].push(array[j]['ID'])
-          array[j]['Duplicate with']['ids'].push(array[i]['ID'])
-        }else if((array[i].Email == array[j].Email)){
-          array[i]['Duplicate with']['context'] =  array[j]['Duplicate with']['context'] = 'email'
-          array[i]['Duplicate with']['ids'].push(array[j]['ID'])
-          array[j]['Duplicate with']['ids'].push(array[i]['ID'])
-        }
-      }
-    }
-  }
-  console.log(array)
-  return array
-}
-
 export default function App() {
   const [candidats,setTableCandidates] = useState([])
-  
+  const [error,setError] = useState(false)
   const handleOpenDialog = (e) => {
     if (buttonRef.current) {
       buttonRef.current.open(e);
@@ -37,17 +17,33 @@ export default function App() {
 
   const handleOnFileLoad = (data) => {
     let candidatsData = data.map((el,index)=>{
-      return Object.assign({ID: index},el.data,{'Duplicate with': {context:'',ids:[]}});
+      if(!(/^[Ff][Uu]([Ll]{2})\s[Nn][Aa][Mm][Ee]$/.test(Object.keys(el.data)[0]) && /^[Pp][Hh][Oo][Nn][Ee]$/.test(Object.keys(el.data)[1]) &&
+          /^[Ee][Mm][Aa][Ii][Ll]$/.test(Object.keys(el.data)[2]))
+      ){
+        setError(true)
+        return
+      }
+      return Object.assign({ID: index},el.data,{'Duplicate with': {ids:[]}}, {errors:[]});
     })
-    candidatsData = setDuplicateWith(candidatsData)
-    setTableCandidates(candidatsData)
+    if(error){
+      candidatsData = parseArrayFunction(candidatsData)
+      setTableCandidates(candidatsData)
+    }
+    
   };
 
     return (
       <>
-        {candidats.length !== 0 && 
-          <Table data = {candidats}/>
-        }
+        {(error ?
+          <div>ERROR</div>
+          :
+          <>
+            {(candidats.length !== 0 &&
+              <Table data = {candidats}/>
+            )}
+          </>
+        )}
+        
         <CSVReader
           config={{
             header:true
