@@ -1,3 +1,9 @@
+table{
+    margin: 0 auto;
+}
+table th{
+    background-color: #ced4da;
+}
 table .error{
-    background-color:#f4cccc
+    background-color:#dc3545
 }

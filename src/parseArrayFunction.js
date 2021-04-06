@@ -36,6 +36,7 @@ const validateYearIncome = (income) => {
   return false
 }
 const changeState = (state) => {
+  console.log(state)
   const stateArray = state.split(',').map(el => {
     states.map(item => {
         if (Object.values(item).indexOf(el) > -1) {
@@ -83,25 +84,25 @@ const parseArrayFunction = (array) =>{
     array.map(el => {
       el['License states'] = changeState(el['License states'])
       
-      if(!validateAge(el.Age)){
+      if(!validateAge(el.Age.trim())){
         el.errors.push('Age')
       }
       if(!validateExp(el.Experience,el.Age)){
         el.errors.push('Exp')
       }
-      if(!validateYearIncome(el['Yearly Income'])){
+      if(!validateYearIncome(el['Yearly Income'].trim())){
         el.errors.push('Income')
       }
-      if(!validateState(el['License states'])){
+      if(!validateState(el['License states'].trim())){
         el.errors.push('State')
       }
-      if(!validateExpDate(el['Expiration date'])){
+      if(!validateExpDate(el['Expiration date'].trim())){
         el.errors.push('ExpDate')
       }
       if(!validatePhone(el['Phone'])){
         el.errors.push('phone')
       }else{
-        el['Phone'] = changePhone(el['Phone'])
+        el['Phone'] = changePhone(el['Phone'].trim())
       }
       if(!validateChildren(el['Has children'])){
         if(el['Has children'].trim().length === 0){
@@ -110,7 +111,7 @@ const parseArrayFunction = (array) =>{
           el.errors.push('Children')
         }
       }
-      if(!validateLicense(el['License number'])){
+      if(!validateLicense(el['License number'].trim())){
         el.errors.push('License')
       }
     })

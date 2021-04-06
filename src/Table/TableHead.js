@@ -8,8 +8,9 @@ const TableHead = ({heading}) =>{
                 {
                     heading.map(el => {
                         return (
-                            <th key={el}>{el}</th>
+                            el !== heading[heading.length-1] ?  <th key={el}>{el}</th> : false
                         )
+                        
                     })
                 }
             </tr>

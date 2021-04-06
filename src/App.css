@@ -1,0 +1,31 @@
+.App{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    justify-content: center;
+    background-color: #e9ecef;
+}
+.import{
+    width: 300px;
+    margin:0 auto
+}
+.import__button{
+    background-color: #91c47d;
+    border: 2px solid green;
+    color: white;
+    width:200px;
+    height:50px
+}
+.formatError{
+    width: 300px;
+    height: 100px;
+    background-color: #dc3545;
+    border:2px solid #9e5961;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin:1em auto;
+}
