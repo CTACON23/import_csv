@@ -11,7 +11,7 @@ const setDuplicateWith = (array) => {
             array[i].errors.push('phone')
             array[j].errors.push('phone')
           }
-          if((array[i].Email === array[j].Email)){
+          if((array[i].Email.toLowerCase() === array[j].Email.toLowerCase())){
             array[i]['Duplicate with']['ids'].push(array[j]['ID'])
             array[j]['Duplicate with']['ids'].push(array[i]['ID'])
             array[i].errors.push('email')
@@ -21,6 +21,11 @@ const setDuplicateWith = (array) => {
       }
     }
     return array
+}
+
+const validateEmail = (email) => {
+  const rgx = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+  return rgx.test(email)
 }
 const validateAge = (age) => {
   return age.isInteger || age >= 21
@@ -35,14 +40,16 @@ const validateYearIncome = (income) => {
   }
   return false
 }
+
+
+
 const changeState = (state) => {
-  console.log(state)
   const stateArray = state.split(',').map(el => {
     states.map(item => {
         if (Object.values(item).indexOf(el) > -1) {
           el = item.abbreviation
         }
-        
+        return el
     })
     return el
   })
@@ -83,7 +90,9 @@ const parseArrayFunction = (array) =>{
     array = setDuplicateWith(array)
     array.map(el => {
       el['License states'] = changeState(el['License states'])
-      
+      if(!validateEmail(el.Email.trim())){
+        el.errors.push('email')
+      }
       if(!validateAge(el.Age.trim())){
         el.errors.push('Age')
       }
@@ -114,6 +123,7 @@ const parseArrayFunction = (array) =>{
       if(!validateLicense(el['License number'].trim())){
         el.errors.push('License')
       }
+      return el
     })
     return array
 }
